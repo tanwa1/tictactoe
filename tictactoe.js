@@ -55,8 +55,8 @@ function gameBoard() {
 // }
 
 function gameController() {
-    // const player1 = 'X';
-    // const player2 = 'O';
+    let currentMark = 'X';
+    let gameOver = false;
 
     return {
         checkWinner(board) {
@@ -90,6 +90,7 @@ function gameController() {
 
                 if (firstValue === secondValue && firstValue === thirdValue && firstValue !== '') {
                     console.log('Winner: ', firstValue);
+                    gameOver = true;
                     return;
                 }
             }
@@ -100,37 +101,50 @@ function gameController() {
                     value = board.getCell(j, k);
                     
                     if (value === ''){
-                        console.log('Ongoing game');
+                        console.log('Ongoing');
                         return;
                     }
-                    // else {
-                    //     console.log('Tie')
-                    //     return;
-                    // }
                 }
             }
             console.log('Tie');
+            gameOver = true;
             return;
+        },
+        
+        playMove(board, row, col) {
+        
+             if (gameOver){
+                 console.log('Game is Over. Start new game.');
+                 return;
+             }   
+             
+            const success = board.placeMark(row, col, currentMark);
+            
+            if (!success){
+                return;
+             }
+             
+             else {
+                 this.checkWinner(board);
+             }
+             
+            if(!gameOver){
+                currentMark = currentMark === 'X' ? 'O' : 'X';
+            }
+             
         }
     }
 }
 
 const board = gameBoard();
 const game = gameController();
-    
-    board.placeMark(0, 0, 'X');
-    board.placeMark(1, 0, 'O');
-    board.placeMark(2, 0, 'O');
-    
-    board.placeMark(0, 1, 'O');
-    board.placeMark(1, 1, 'X');
-    board.placeMark(2, 1, 'X');
-    
-    board.placeMark(0, 2, 'X');
-    board.placeMark(1, 2, 'O');
-    board.placeMark(2, 2, 'O');
-    
-    
 board.getCell(0, 2);
-game.checkWinner(board);
+game.playMove(board, 0, 0);
+game.playMove(board, 0, 1);
+game.playMove(board, 1, 1);
+game.playMove(board, 2, 2);
+game.playMove(board, 2, 2);
+game.playMove(board, 2, 0);
+game.playMove(board, 0, 2);
+game.playMove(board, 1, 0);
 board.printBoard();
