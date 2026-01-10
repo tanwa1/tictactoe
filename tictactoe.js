@@ -1,14 +1,7 @@
-// const row = 
-// const column =
 
-// 2) List the 8 winning lines (on paper / in comments)
+const resetButton = document.getElementById('resetButton');
 
-// Rows: (0,1,2) (3,4,5) (6,7,8)
-// Cols: (0,3,6) (1,4,7) (2,5,8)
-// Diags: (0,4,8) (2,4,6)
-
-const player1 = document.getElementById('player1');
-const player2 = document.getElementById('player2');
+const cellValues = document.querySelectorAll("div.gameBoard div");
 
 function gameBoard() {
     let emptyBoard = [
@@ -45,14 +38,19 @@ function gameBoard() {
 
         getCell(row, column) {
             return emptyBoard[row][column];
+        },
+        reset() {
+            emptyBoard = [
+                ['', '', ''],
+                ['', '', ''],
+                ['', '', '']
+            ];
+            currentMark = 'X';
+            gameOver = false;
         }
 
     }
 }
-
-// function player() {
-
-// }
 
 function gameController() {
     let currentMark = 'X';
@@ -78,7 +76,6 @@ function gameController() {
 
             for (let i = 0; i < winningLines.length; i++) {
                 lines = winningLines[i];
-                // console.log(lines)
 
                 let pair0 = lines[0];
                 let pair1 = lines[1];
@@ -89,62 +86,80 @@ function gameController() {
                 let thirdValue = board.getCell(pair2[0], pair2[1]);
 
                 if (firstValue === secondValue && firstValue === thirdValue && firstValue !== '') {
-                    console.log('Winner: ', firstValue);
+                    alert('Winner: ' + firstValue);
                     gameOver = true;
                     return;
                 }
             }
-            
+
             let value;
-            for (let j = 0; j <= 2; j++){
-                for (let k = 0; k <= 2 ; k++) {
+            for (let j = 0; j <= 2; j++) {
+                for (let k = 0; k <= 2; k++) {
                     value = board.getCell(j, k);
-                    
-                    if (value === ''){
+
+                    if (value === '') {
                         console.log('Ongoing');
                         return;
                     }
                 }
             }
-            console.log('Tie');
+            alert('Tie');
             gameOver = true;
             return;
         },
-        
+
         playMove(board, row, col) {
-        
-             if (gameOver){
-                 console.log('Game is Over. Start new game.');
-                 return;
-             }   
-             
-            const success = board.placeMark(row, col, currentMark);
-            
-            if (!success){
+
+            if (gameOver) {
+                console.log('Game is Over. Start new game.');
                 return;
-             }
-             
-             else {
-                 this.checkWinner(board);
-             }
-             
-            if(!gameOver){
+            }
+
+            const success = board.placeMark(row, col, currentMark);
+
+            if (!success) {
+                return;
+            }
+
+            else {
+                this.checkWinner(board);
+            }
+
+            if (!gameOver) {
                 currentMark = currentMark === 'X' ? 'O' : 'X';
             }
-             
+
+        },
+        reset() {
+            emptyBoard = [
+                ['', '', ''],
+                ['', '', ''],
+                ['', '', '']
+            ];
+            currentMark = 'X';
+            gameOver = false;
         }
     }
 }
 
+
 const board = gameBoard();
 const game = gameController();
-board.getCell(0, 2);
-game.playMove(board, 0, 0);
-game.playMove(board, 0, 1);
-game.playMove(board, 1, 1);
-game.playMove(board, 2, 2);
-game.playMove(board, 2, 2);
-game.playMove(board, 2, 0);
-game.playMove(board, 0, 2);
-game.playMove(board, 1, 0);
-board.printBoard();
+
+document.querySelectorAll("div.gameBoard div").forEach((div) => {
+    div.addEventListener('click', () => {
+        const rowValue = parseInt(div.dataset.row);
+        const colValue = parseInt(div.dataset.col);
+        game.playMove(board, rowValue, colValue);
+        div.textContent = board.getCell(rowValue, colValue);
+    });
+});
+
+document.querySelectorAll("div.gameBoard div").forEach((div) => {
+    resetButton.addEventListener('click', () => {
+        board.reset();
+        game.reset();
+        div.textContent = '';
+    });
+});
+
