@@ -1,7 +1,11 @@
 
 const resetButton = document.getElementById('resetButton');
+const winnerText = document.getElementById('winnerText');
+const playerTurn = document.getElementById('playerTurn');
+const submitButton = document.getElementById('submitButton');
+const playerName1Input = document.getElementById('playerName1');
+const playerName2Input = document.getElementById('playerName2');
 
-const cellValues = document.querySelectorAll("div.gameBoard div");
 
 function gameBoard() {
     let emptyBoard = [
@@ -39,14 +43,13 @@ function gameBoard() {
         getCell(row, column) {
             return emptyBoard[row][column];
         },
+
         reset() {
             emptyBoard = [
                 ['', '', ''],
                 ['', '', ''],
                 ['', '', '']
             ];
-            currentMark = 'X';
-            gameOver = false;
         }
 
     }
@@ -56,7 +59,20 @@ function gameController() {
     let currentMark = 'X';
     let gameOver = false;
 
+    let playerOne;
+    let playerTwo;
+
     return {
+        getCurrentMark() {
+            return currentMark;
+        },
+
+        getPlayerNameForMark(mark) {
+            if (mark === 'X')
+                return playerOne || 'Player One';
+                return playerTwo || 'Player Two';
+        },
+
         checkWinner(board) {
             const winningLines = [
                 //Rows
@@ -86,7 +102,7 @@ function gameController() {
                 let thirdValue = board.getCell(pair2[0], pair2[1]);
 
                 if (firstValue === secondValue && firstValue === thirdValue && firstValue !== '') {
-                    alert('Winner: ' + firstValue);
+                    winnerText.textContent = 'Winner: ' + this.getPlayerNameForMark(firstValue);
                     gameOver = true;
                     return;
                 }
@@ -103,9 +119,15 @@ function gameController() {
                     }
                 }
             }
-            alert('Tie');
+            
+            winnerText.textContent = 'Tie';
             gameOver = true;
             return;
+        },
+
+        setPlayers(name1, name2) {
+            playerOne = name1;
+            playerTwo = name2;
         },
 
         playMove(board, row, col) {
@@ -131,11 +153,6 @@ function gameController() {
 
         },
         reset() {
-            emptyBoard = [
-                ['', '', ''],
-                ['', '', ''],
-                ['', '', '']
-            ];
             currentMark = 'X';
             gameOver = false;
         }
@@ -146,20 +163,36 @@ function gameController() {
 const board = gameBoard();
 const game = gameController();
 
+
+function updatePlayerTurn() {
+    const currentMark = game.getCurrentMark();
+    const currentName = game.getPlayerNameForMark(currentMark);
+    playerTurn.textContent = `${currentName}'s turn (${currentMark})`;
+}
+
 document.querySelectorAll("div.gameBoard div").forEach((div) => {
     div.addEventListener('click', () => {
-        const rowValue = parseInt(div.dataset.row);
-        const colValue = parseInt(div.dataset.col);
+        const rowValue = Number(div.dataset.row);
+        const colValue = Number(div.dataset.col);
         game.playMove(board, rowValue, colValue);
         div.textContent = board.getCell(rowValue, colValue);
+        updatePlayerTurn();
     });
 });
 
-document.querySelectorAll("div.gameBoard div").forEach((div) => {
-    resetButton.addEventListener('click', () => {
-        board.reset();
-        game.reset();
-        div.textContent = '';
-    });
+submitButton.addEventListener('click', () => {
+    const getValue1 = playerName1Input.value;
+    const getValue2 = playerName2Input.value;
+    game.setPlayers(getValue1, getValue2);
+    updatePlayerTurn();
 });
 
+resetButton.addEventListener('click', () => {
+    board.reset();
+    game.reset();
+    winnerText.textContent = '';
+    document.querySelectorAll("div.gameBoard div").forEach((cell) => {
+        cell.textContent = '';
+    });
+    updatePlayerTurn();
+});

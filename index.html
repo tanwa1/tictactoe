@@ -10,22 +10,40 @@
 
 <body>
   <div class="container">
-    <h1>Tic Tac Toe</h1>
-    <div class="gameBoard" id="gameBoard">
-      <div data-row="0" data-col="0" class="cell"></div>
-      <div data-row="0" data-col="1" class="cell"></div>
-      <div data-row="0" data-col="2" class="cell"></div>
-      <div data-row="1" data-col="0" class="cell"></div>
-      <div data-row="1" data-col="1" class="cell"></div>
-      <div data-row="1" data-col="2" class="cell"></div>
-      <div data-row="2" data-col="0" class="cell"></div>
-      <div data-row="2" data-col="1" class="cell"></div>
-      <div data-row="2" data-col="2" class="cell"></div>
+
+    <div class="playerNameRow">
+        <div id="pow">
+          <label for="playerName1">Player One</label>
+          <input type="text" id="playerName1" name="playerName">
+        </div>
+
+        <div id="playerNameRow2">
+          <label for="playerName2">Player Two</label>
+          <input type="text" id="playerName2" name="playerName">
+        </div>
+
+        <div>
+          <button id="submitButton" type="button" >Submit</button>
+        </div>
     </div>
-    
-     <button id="resetButton">Reset</button>
-     
-     
+
+    <div class="gameContainer">
+      <h1>Tic Tac Toe</h1>
+      <div id="playerTurn"></div>
+      <div class="gameBoard" id="gameBoard">
+        <div data-row="0" data-col="0" class="cell"></div>
+        <div data-row="0" data-col="1" class="cell"></div>
+        <div data-row="0" data-col="2" class="cell"></div>
+        <div data-row="1" data-col="0" class="cell"></div>
+        <div data-row="1" data-col="1" class="cell"></div>
+        <div data-row="1" data-col="2" class="cell"></div>
+        <div data-row="2" data-col="0" class="cell"></div>
+        <div data-row="2" data-col="1" class="cell"></div>
+        <div data-row="2" data-col="2" class="cell"></div>
+      </div>
+      <button id="resetButton">Reset</button>
+      <div id="winnerText"></div>
+    </div>
   </div>
   <script src="tictactoe.js"></script>
 </body>
